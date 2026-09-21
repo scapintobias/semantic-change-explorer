@@ -1,0 +1,15 @@
+name: Bug report
+description: Report reproducible behavior that contradicts documented semantics.
+body:
+  - type: textarea
+    attributes:
+      label: Expected and observed behavior
+      description: Include the command and relevant semantic fields. Do not upload private assets.
+    validations:
+      required: true
+  - type: textarea
+    attributes:
+      label: Reproduction and environment
+      description: Tool, Blender, Python, browser and OS versions; a minimal generated fixture if possible.
+    validations:
+      required: true

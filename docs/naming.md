@@ -1,0 +1,4 @@
+# Provisional naming
+`semantic-change-explorer` is an internal descriptive working name, not a cleared public brand. Do not use Blendiff/BlenDiff. SemDiff/SemanticDiff is unsuitable: [SemanticDiff](https://app.semanticdiff.com/) already exists for code review. General web search for the exact working string on 2026-09-21 did not establish an occupied product, which is not availability or trademark clearance. Before publishing, repeat GitHub repository search, PyPI project lookup and npm registry lookup, choose a name, and record results. Naming does not block local development.
+
+Direct registry checks on 2026-09-21: GitHub repository-name search returned zero matches; PyPI project JSON and npm package registry endpoints both returned HTTP 404 for `semantic-change-explorer`. These checks establish no visible exact package at those endpoints at that time, not trademark clearance. The working name remains provisional; no package was registered.

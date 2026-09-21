@@ -1,0 +1,1158 @@
+{
+  "after": {
+    "name": "after.blend",
+    "sha256": "d01e225e02c5509aef1b772e63464ad918cb95d739ce4fadce62ee143b11fd19"
+  },
+  "ambiguity": [
+    {
+      "after": "object:00012",
+      "before": "object:00015",
+      "evidence": [
+        "same geometry",
+        "same topology",
+        "same context",
+        "same materials"
+      ]
+    },
+    {
+      "after": "object:00013",
+      "before": "object:00015",
+      "evidence": [
+        "same geometry",
+        "same topology",
+        "same context",
+        "same materials"
+      ]
+    },
+    {
+      "after": "object:00012",
+      "before": "object:00016",
+      "evidence": [
+        "same geometry",
+        "same topology",
+        "same context",
+        "same materials"
+      ]
+    },
+    {
+      "after": "object:00013",
+      "before": "object:00016",
+      "evidence": [
+        "same geometry",
+        "same topology",
+        "same context",
+        "same materials"
+      ]
+    }
+  ],
+  "before": {
+    "name": "before.blend",
+    "sha256": "c2bc989d0f5957d344ea76867ac09f4139db333378988f56f8fc170cb480224a"
+  },
+  "context": {
+    "after": {
+      "autoexec_disabled": true,
+      "external_resources_fingerprinted": false,
+      "frame": 1,
+      "libraries": [],
+      "scene": "Scene",
+      "unit_scale": 0.01,
+      "units": "METRIC",
+      "view_layer": "ViewLayer"
+    },
+    "before": {
+      "autoexec_disabled": true,
+      "external_resources_fingerprinted": false,
+      "frame": 1,
+      "libraries": [],
+      "scene": "Scene",
+      "unit_scale": 0.01,
+      "units": "METRIC",
+      "view_layer": "ViewLayer"
+    }
+  },
+  "correspondences": [
+    {
+      "after": "collection:00000",
+      "before": "collection:00000",
+      "confidence": "strong inferred",
+      "evidence": [
+        "same name (not proof of identity)",
+        "same context"
+      ],
+      "method": "mutual-best-margin"
+    },
+    {
+      "after": "collection:00001",
+      "before": "collection:00001",
+      "confidence": "strong inferred",
+      "evidence": [
+        "same name (not proof of identity)",
+        "same context"
+      ],
+      "method": "mutual-best-margin"
+    },
+    {
+      "after": "collection:00002",
+      "before": "collection:00002",
+      "confidence": "strong inferred",
+      "evidence": [
+        "same name (not proof of identity)",
+        "same context"
+      ],
+      "method": "mutual-best-margin"
+    },
+    {
+      "after": "object:00000",
+      "before": "object:00000",
+      "confidence": "strong inferred",
+      "evidence": [
+        "same name (not proof of identity)",
+        "same data",
+        "same context",
+        "same spatial transform"
+      ],
+      "method": "mutual-best-margin"
+    },
+    {
+      "after": "object:00001",
+      "before": "object:00001",
+      "confidence": "strong inferred",
+      "evidence": [
+        "same name (not proof of identity)",
+        "same geometry",
+        "same topology",
+        "same data",
+        "same context",
+        "same materials",
+        "same spatial transform"
+      ],
+      "method": "mutual-best-margin"
+    },
+    {
+      "after": "object:00002",
+      "before": "object:00002",
+      "confidence": "strong inferred",
+      "evidence": [
+        "same name (not proof of identity)",
+        "same geometry",
+        "same topology",
+        "same data",
+        "same context",
+        "same materials",
+        "same spatial transform"
+      ],
+      "method": "mutual-best-margin"
+    },
+    {
+      "after": "object:00003",
+      "before": "object:00003",
+      "confidence": "strong inferred",
+      "evidence": [
+        "same name (not proof of identity)",
+        "same geometry",
+        "same topology",
+        "same data",
+        "same context",
+        "same materials",
+        "same spatial transform"
+      ],
+      "method": "mutual-best-margin"
+    },
+    {
+      "after": "object:00004",
+      "before": "object:00004",
+      "confidence": "strong inferred",
+      "evidence": [
+        "same name (not proof of identity)",
+        "same geometry",
+        "same topology",
+        "same data",
+        "same context",
+        "same materials",
+        "same spatial transform"
+      ],
+      "method": "mutual-best-margin"
+    },
+    {
+      "after": "object:00005",
+      "before": "object:00005",
+      "confidence": "strong inferred",
+      "evidence": [
+        "same name (not proof of identity)",
+        "same geometry",
+        "same topology",
+        "same data",
+        "same context",
+        "same materials",
+        "same spatial transform"
+      ],
+      "method": "mutual-best-margin"
+    },
+    {
+      "after": "object:00010",
+      "before": "object:00006",
+      "confidence": "probable rename",
+      "evidence": [
+        "same geometry",
+        "same topology",
+        "same data",
+        "same context",
+        "same materials",
+        "same spatial transform"
+      ],
+      "method": "mutual-best-margin"
+    },
+    {
+      "after": "object:00006",
+      "before": "object:00007",
+      "confidence": "strong inferred",
+      "evidence": [
+        "same name (not proof of identity)",
+        "same geometry",
+        "same topology",
+        "same data",
+        "same context",
+        "same materials",
+        "same spatial transform"
+      ],
+      "method": "mutual-best-margin"
+    },
+    {
+      "after": "object:00007",
+      "before": "object:00008",
+      "confidence": "strong inferred",
+      "evidence": [
+        "same name (not proof of identity)",
+        "same geometry",
+        "same topology",
+        "same data",
+        "same context",
+        "same materials",
+        "same spatial transform"
+      ],
+      "method": "mutual-best-margin"
+    },
+    {
+      "after": "object:00008",
+      "before": "object:00009",
+      "confidence": "strong inferred",
+      "evidence": [
+        "same name (not proof of identity)",
+        "same geometry",
+        "same topology",
+        "same data",
+        "same context",
+        "same materials",
+        "same spatial transform"
+      ],
+      "method": "mutual-best-margin"
+    },
+    {
+      "after": "object:00009",
+      "before": "object:00010",
+      "confidence": "strong inferred",
+      "evidence": [
+        "same name (not proof of identity)",
+        "same data",
+        "same context",
+        "same spatial transform"
+      ],
+      "method": "mutual-best-margin"
+    },
+    {
+      "after": "object:00011",
+      "before": "object:00012",
+      "confidence": "strong inferred",
+      "evidence": [
+        "same name (not proof of identity)",
+        "same geometry",
+        "same topology",
+        "same data",
+        "same context",
+        "same materials"
+      ],
+      "method": "mutual-best-margin"
+    },
+    {
+      "after": "object:00014",
+      "before": "object:00013",
+      "confidence": "strong inferred",
+      "evidence": [
+        "same name (not proof of identity)",
+        "same geometry",
+        "same topology",
+        "same data",
+        "same context",
+        "same spatial transform"
+      ],
+      "method": "mutual-best-margin"
+    },
+    {
+      "after": "object:00015",
+      "before": "object:00014",
+      "confidence": "strong inferred",
+      "evidence": [
+        "same name (not proof of identity)",
+        "same topology",
+        "same data",
+        "same context",
+        "same materials",
+        "same spatial transform"
+      ],
+      "method": "mutual-best-margin"
+    }
+  ],
+  "coverage": {
+    "compared": [
+      "camera-light",
+      "custom",
+      "evaluated",
+      "materials",
+      "mesh",
+      "modifiers",
+      "structure",
+      "transforms"
+    ],
+    "not_compared": [
+      "UVs, vertex attributes and normals",
+      "animation curves, drivers and NLA",
+      "constraints settings",
+      "instances, rigs, simulation caches",
+      "linked resource content provenance",
+      "material node graph internals and textures",
+      "other scenes and view layers"
+    ]
+  },
+  "records": [
+    {
+      "after": "object:00000",
+      "before": "object:00000",
+      "changes": [
+        {
+          "after": {
+            "color": [
+              1.0,
+              1.0,
+              1.0
+            ],
+            "energy": 1100.0,
+            "size": 1.0,
+            "spot_size": null,
+            "type": "AREA"
+          },
+          "before": {
+            "color": [
+              1.0,
+              1.0,
+              1.0
+            ],
+            "energy": 800.0,
+            "size": 1.0,
+            "spot_size": null,
+            "type": "AREA"
+          },
+          "category": "light",
+          "domain": "authored",
+          "label": "Light parameters"
+        }
+      ],
+      "id": "pair:object:00000",
+      "match": {
+        "after": "object:00000",
+        "before": "object:00000",
+        "confidence": "strong inferred",
+        "evidence": [
+          "same name (not proof of identity)",
+          "same data",
+          "same context",
+          "same spatial transform"
+        ],
+        "method": "mutual-best-margin"
+      },
+      "name": "Bench light",
+      "status": "modified",
+      "type": "blender.light"
+    },
+    {
+      "after": "collection:00000",
+      "before": "collection:00000",
+      "changes": [],
+      "id": "pair:collection:00000",
+      "match": {
+        "after": "collection:00000",
+        "before": "collection:00000",
+        "confidence": "strong inferred",
+        "evidence": [
+          "same name (not proof of identity)",
+          "same context"
+        ],
+        "method": "mutual-best-margin"
+      },
+      "name": "Collection",
+      "status": "unchanged",
+      "type": "blender.collection"
+    },
+    {
+      "after": "object:00001",
+      "before": "object:00001",
+      "changes": [
+        {
+          "after": [
+            "Lower housing"
+          ],
+          "after_refs": [
+            "object:00010"
+          ],
+          "before": [],
+          "before_refs": [],
+          "category": "relationship",
+          "domain": "authored",
+          "label": "parent"
+        }
+      ],
+      "id": "pair:object:00001",
+      "match": {
+        "after": "object:00001",
+        "before": "object:00001",
+        "confidence": "strong inferred",
+        "evidence": [
+          "same name (not proof of identity)",
+          "same geometry",
+          "same topology",
+          "same data",
+          "same context",
+          "same materials",
+          "same spatial transform"
+        ],
+        "method": "mutual-best-margin"
+      },
+      "name": "Controller",
+      "status": "modified",
+      "type": "blender.mesh"
+    },
+    {
+      "after": "collection:00001",
+      "before": "collection:00001",
+      "changes": [],
+      "id": "pair:collection:00001",
+      "match": {
+        "after": "collection:00001",
+        "before": "collection:00001",
+        "confidence": "strong inferred",
+        "evidence": [
+          "same name (not proof of identity)",
+          "same context"
+        ],
+        "method": "mutual-best-margin"
+      },
+      "name": "Electronics",
+      "status": "unchanged",
+      "type": "blender.collection"
+    },
+    {
+      "after": "object:00002",
+      "before": "object:00002",
+      "changes": [],
+      "id": "pair:object:00002",
+      "match": {
+        "after": "object:00002",
+        "before": "object:00002",
+        "confidence": "strong inferred",
+        "evidence": [
+          "same name (not proof of identity)",
+          "same geometry",
+          "same topology",
+          "same data",
+          "same context",
+          "same materials",
+          "same spatial transform"
+        ],
+        "method": "mutual-best-margin"
+      },
+      "name": "Fastener 00",
+      "status": "unchanged",
+      "type": "blender.mesh"
+    },
+    {
+      "after": "object:00003",
+      "before": "object:00003",
+      "changes": [],
+      "id": "pair:object:00003",
+      "match": {
+        "after": "object:00003",
+        "before": "object:00003",
+        "confidence": "strong inferred",
+        "evidence": [
+          "same name (not proof of identity)",
+          "same geometry",
+          "same topology",
+          "same data",
+          "same context",
+          "same materials",
+          "same spatial transform"
+        ],
+        "method": "mutual-best-margin"
+      },
+      "name": "Fastener 01",
+      "status": "unchanged",
+      "type": "blender.mesh"
+    },
+    {
+      "after": "object:00004",
+      "before": "object:00004",
+      "changes": [],
+      "id": "pair:object:00004",
+      "match": {
+        "after": "object:00004",
+        "before": "object:00004",
+        "confidence": "strong inferred",
+        "evidence": [
+          "same name (not proof of identity)",
+          "same geometry",
+          "same topology",
+          "same data",
+          "same context",
+          "same materials",
+          "same spatial transform"
+        ],
+        "method": "mutual-best-margin"
+      },
+      "name": "Fastener 10",
+      "status": "unchanged",
+      "type": "blender.mesh"
+    },
+    {
+      "after": "object:00005",
+      "before": "object:00005",
+      "changes": [],
+      "id": "pair:object:00005",
+      "match": {
+        "after": "object:00005",
+        "before": "object:00005",
+        "confidence": "strong inferred",
+        "evidence": [
+          "same name (not proof of identity)",
+          "same geometry",
+          "same topology",
+          "same data",
+          "same context",
+          "same materials",
+          "same spatial transform"
+        ],
+        "method": "mutual-best-margin"
+      },
+      "name": "Fastener 11",
+      "status": "unchanged",
+      "type": "blender.mesh"
+    },
+    {
+      "after": "object:00006",
+      "before": "object:00007",
+      "changes": [],
+      "id": "pair:object:00007",
+      "match": {
+        "after": "object:00006",
+        "before": "object:00007",
+        "confidence": "strong inferred",
+        "evidence": [
+          "same name (not proof of identity)",
+          "same geometry",
+          "same topology",
+          "same data",
+          "same context",
+          "same materials",
+          "same spatial transform"
+        ],
+        "method": "mutual-best-margin"
+      },
+      "name": "IC 1",
+      "status": "unchanged",
+      "type": "blender.mesh"
+    },
+    {
+      "after": "object:00007",
+      "before": "object:00008",
+      "changes": [],
+      "id": "pair:object:00008",
+      "match": {
+        "after": "object:00007",
+        "before": "object:00008",
+        "confidence": "strong inferred",
+        "evidence": [
+          "same name (not proof of identity)",
+          "same geometry",
+          "same topology",
+          "same data",
+          "same context",
+          "same materials",
+          "same spatial transform"
+        ],
+        "method": "mutual-best-margin"
+      },
+      "name": "IC 2",
+      "status": "unchanged",
+      "type": "blender.mesh"
+    },
+    {
+      "after": "object:00008",
+      "before": "object:00009",
+      "changes": [],
+      "id": "pair:object:00009",
+      "match": {
+        "after": "object:00008",
+        "before": "object:00009",
+        "confidence": "strong inferred",
+        "evidence": [
+          "same name (not proof of identity)",
+          "same geometry",
+          "same topology",
+          "same data",
+          "same context",
+          "same materials",
+          "same spatial transform"
+        ],
+        "method": "mutual-best-margin"
+      },
+      "name": "IC 3",
+      "status": "unchanged",
+      "type": "blender.mesh"
+    },
+    {
+      "after": "object:00009",
+      "before": "object:00010",
+      "changes": [
+        {
+          "after": {
+            "clip_end": 1000.0,
+            "clip_start": 0.1,
+            "lens": 65.0,
+            "ortho_scale": 6.0,
+            "sensor_height": 24.0,
+            "sensor_width": 36.0,
+            "shift_x": 0.0,
+            "shift_y": 0.0,
+            "type": "PERSP"
+          },
+          "before": {
+            "clip_end": 1000.0,
+            "clip_start": 0.1,
+            "lens": 50.0,
+            "ortho_scale": 6.0,
+            "sensor_height": 24.0,
+            "sensor_width": 36.0,
+            "shift_x": 0.0,
+            "shift_y": 0.0,
+            "type": "PERSP"
+          },
+          "category": "camera",
+          "domain": "authored",
+          "label": "Camera optics"
+        }
+      ],
+      "id": "pair:object:00010",
+      "match": {
+        "after": "object:00009",
+        "before": "object:00010",
+        "confidence": "strong inferred",
+        "evidence": [
+          "same name (not proof of identity)",
+          "same data",
+          "same context",
+          "same spatial transform"
+        ],
+        "method": "mutual-best-margin"
+      },
+      "name": "Inspection camera",
+      "status": "modified",
+      "type": "blender.camera"
+    },
+    {
+      "after": "collection:00002",
+      "before": "collection:00002",
+      "changes": [],
+      "id": "pair:collection:00002",
+      "match": {
+        "after": "collection:00002",
+        "before": "collection:00002",
+        "confidence": "strong inferred",
+        "evidence": [
+          "same name (not proof of identity)",
+          "same context"
+        ],
+        "method": "mutual-best-margin"
+      },
+      "name": "Instrument assembly",
+      "status": "unchanged",
+      "type": "blender.collection"
+    },
+    {
+      "after": null,
+      "before": "object:00011",
+      "changes": [],
+      "id": "before:object:00011",
+      "match": {
+        "confidence": "unmatched",
+        "evidence": []
+      },
+      "name": "Legacy connector",
+      "status": "removed",
+      "type": "blender.mesh"
+    },
+    {
+      "after": "object:00010",
+      "before": "object:00006",
+      "changes": [
+        {
+          "after": "Lower housing",
+          "before": "Housing",
+          "category": "renamed",
+          "domain": "authored",
+          "label": "Name differs; correspondence inferred"
+        },
+        {
+          "after": {
+            "part_number": "SCE-001-B"
+          },
+          "before": {
+            "part_number": "SCE-001"
+          },
+          "category": "custom",
+          "domain": "authored",
+          "label": "Custom properties"
+        },
+        {
+          "after": [
+            {
+              "name": "Edge radius",
+              "render": true,
+              "settings": {
+                "angle_limit": 0.523599,
+                "limit_method": "ANGLE",
+                "segments": 3,
+                "width": 0.18
+              },
+              "type": "BEVEL",
+              "viewport": true
+            }
+          ],
+          "before": [
+            {
+              "name": "Edge radius",
+              "render": true,
+              "settings": {
+                "angle_limit": 0.523599,
+                "limit_method": "ANGLE",
+                "segments": 3,
+                "width": 0.07
+              },
+              "type": "BEVEL",
+              "viewport": true
+            }
+          ],
+          "category": "modifier",
+          "domain": "authored",
+          "label": "Ordered modifier stack"
+        },
+        {
+          "after": {
+            "bounds": [
+              [
+                -2.75,
+                -1.75,
+                -0.3
+              ],
+              [
+                2.75,
+                1.75,
+                0.3
+              ]
+            ]
+          },
+          "before": {
+            "bounds": [
+              [
+                -2.75,
+                -1.75,
+                -0.3
+              ],
+              [
+                2.75,
+                1.75,
+                0.3
+              ]
+            ]
+          },
+          "category": "evaluated",
+          "compatible": true,
+          "displacement": {
+            "changed_vertices": 96,
+            "max": 0.155563,
+            "mean_changed": 0.122383
+          },
+          "domain": "evaluated",
+          "label": "Evaluated geometry differs"
+        }
+      ],
+      "id": "pair:object:00006",
+      "match": {
+        "after": "object:00010",
+        "before": "object:00006",
+        "confidence": "probable rename",
+        "evidence": [
+          "same geometry",
+          "same topology",
+          "same data",
+          "same context",
+          "same materials",
+          "same spatial transform"
+        ],
+        "method": "mutual-best-margin"
+      },
+      "name": "Lower housing",
+      "status": "modified",
+      "type": "blender.mesh"
+    },
+    {
+      "after": "object:00011",
+      "before": "object:00012",
+      "changes": [
+        {
+          "after": [
+            0.4,
+            0.2,
+            2.75
+          ],
+          "before": [
+            0.0,
+            0.0,
+            1.35
+          ],
+          "category": "moved",
+          "domain": "authored",
+          "label": "Local position"
+        },
+        {
+          "after": [
+            0.0,
+            0.0,
+            0.12
+          ],
+          "before": [
+            0.0,
+            0.0,
+            0.0
+          ],
+          "category": "rotated",
+          "domain": "authored",
+          "label": "Local rotation"
+        },
+        {
+          "after": [
+            [
+              0.992809,
+              -0.119712,
+              0.0,
+              0.4
+            ],
+            [
+              0.119712,
+              0.992809,
+              0.0,
+              0.2
+            ],
+            [
+              0.0,
+              0.0,
+              1.0,
+              2.75
+            ],
+            [
+              0.0,
+              0.0,
+              0.0,
+              1.0
+            ]
+          ],
+          "before": [
+            [
+              1.0,
+              0.0,
+              0.0,
+              0.0
+            ],
+            [
+              0.0,
+              1.0,
+              0.0,
+              0.0
+            ],
+            [
+              0.0,
+              0.0,
+              1.0,
+              1.35
+            ],
+            [
+              0.0,
+              0.0,
+              0.0,
+              1.0
+            ]
+          ],
+          "category": "evaluated",
+          "domain": "evaluated",
+          "label": "Evaluated world transform differs"
+        }
+      ],
+      "id": "pair:object:00012",
+      "match": {
+        "after": "object:00011",
+        "before": "object:00012",
+        "confidence": "strong inferred",
+        "evidence": [
+          "same name (not proof of identity)",
+          "same geometry",
+          "same topology",
+          "same data",
+          "same context",
+          "same materials"
+        ],
+        "method": "mutual-best-margin"
+      },
+      "name": "Service panel",
+      "status": "modified",
+      "type": "blender.mesh"
+    },
+    {
+      "after": "object:00012",
+      "before": null,
+      "changes": [],
+      "id": "after:object:00012",
+      "match": {
+        "confidence": "ambiguous",
+        "evidence": []
+      },
+      "name": "Spacer 1",
+      "status": "ambiguous",
+      "type": "blender.mesh"
+    },
+    {
+      "after": "object:00013",
+      "before": null,
+      "changes": [],
+      "id": "after:object:00013",
+      "match": {
+        "confidence": "ambiguous",
+        "evidence": []
+      },
+      "name": "Spacer 2",
+      "status": "ambiguous",
+      "type": "blender.mesh"
+    },
+    {
+      "after": "object:00014",
+      "before": "object:00013",
+      "changes": [
+        {
+          "after": [
+            {
+              "diffuse": [
+                0.62,
+                0.7,
+                0.73,
+                1.0
+              ],
+              "metallic": 0.7,
+              "name": "Brushed aluminium",
+              "roughness": 0.35
+            }
+          ],
+          "before": [
+            {
+              "diffuse": [
+                0.95,
+                0.32,
+                0.055,
+                1.0
+              ],
+              "metallic": 0.0,
+              "name": "Signal amber",
+              "roughness": 0.35
+            }
+          ],
+          "category": "material",
+          "domain": "authored",
+          "label": "Material slots and sampled parameters"
+        }
+      ],
+      "id": "pair:object:00013",
+      "match": {
+        "after": "object:00014",
+        "before": "object:00013",
+        "confidence": "strong inferred",
+        "evidence": [
+          "same name (not proof of identity)",
+          "same geometry",
+          "same topology",
+          "same data",
+          "same context",
+          "same spatial transform"
+        ],
+        "method": "mutual-best-margin"
+      },
+      "name": "Status lens",
+      "status": "modified",
+      "type": "blender.mesh"
+    },
+    {
+      "after": "object:00015",
+      "before": "object:00014",
+      "changes": [
+        {
+          "after": {
+            "bounds": [
+              [
+                -0.15,
+                -1.35,
+                -0.275
+              ],
+              [
+                0.3,
+                1.35,
+                0.275
+              ]
+            ]
+          },
+          "before": {
+            "bounds": [
+              [
+                -0.15,
+                -1.35,
+                -0.275
+              ],
+              [
+                0.15,
+                1.35,
+                0.275
+              ]
+            ]
+          },
+          "category": "geometry",
+          "compatible": true,
+          "displacement": {
+            "changed_vertices": 4,
+            "max": 0.15,
+            "mean_changed": 0.15
+          },
+          "domain": "authored",
+          "label": "Vertex positions differ"
+        },
+        {
+          "after": {
+            "bounds": [
+              [
+                -0.132018,
+                -1.35,
+                -0.275
+              ],
+              [
+                0.282018,
+                1.35,
+                0.275
+              ]
+            ]
+          },
+          "before": {
+            "bounds": [
+              [
+                -0.15,
+                -1.35,
+                -0.275
+              ],
+              [
+                0.15,
+                1.35,
+                0.275
+              ]
+            ]
+          },
+          "category": "evaluated",
+          "compatible": true,
+          "displacement": {
+            "changed_vertices": 92,
+            "max": 0.15,
+            "mean_changed": 0.078292
+          },
+          "domain": "evaluated",
+          "label": "Evaluated geometry differs"
+        }
+      ],
+      "id": "pair:object:00014",
+      "match": {
+        "after": "object:00015",
+        "before": "object:00014",
+        "confidence": "strong inferred",
+        "evidence": [
+          "same name (not proof of identity)",
+          "same topology",
+          "same data",
+          "same context",
+          "same materials",
+          "same spatial transform"
+        ],
+        "method": "mutual-best-margin"
+      },
+      "name": "Thermal rail",
+      "status": "modified",
+      "type": "blender.mesh"
+    },
+    {
+      "after": "object:00016",
+      "before": null,
+      "changes": [],
+      "id": "after:object:00016",
+      "match": {
+        "confidence": "unmatched",
+        "evidence": []
+      },
+      "name": "USB-C module",
+      "status": "added",
+      "type": "blender.mesh"
+    },
+    {
+      "after": null,
+      "before": "object:00015",
+      "changes": [],
+      "id": "before:object:00015",
+      "match": {
+        "confidence": "ambiguous",
+        "evidence": []
+      },
+      "name": "Washer 1",
+      "status": "ambiguous",
+      "type": "blender.mesh"
+    },
+    {
+      "after": null,
+      "before": "object:00016",
+      "changes": [],
+      "id": "before:object:00016",
+      "match": {
+        "confidence": "ambiguous",
+        "evidence": []
+      },
+      "name": "Washer 2",
+      "status": "ambiguous",
+      "type": "blender.mesh"
+    }
+  ],
+  "schema_version": "1.0",
+  "summary": {
+    "added": 1,
+    "ambiguous": 4,
+    "modified": 7,
+    "removed": 1,
+    "unchanged": 10
+  }
+}

@@ -1,0 +1,12 @@
+name: Focused improvement
+description: Propose an improvement to understanding change.
+body:
+  - type: textarea
+    attributes:
+      label: Decision this would help a user make
+    validations:
+      required: true
+  - type: textarea
+    attributes:
+      label: Evidence, scope and uncertainty
+      description: Describe a concrete workflow, current limitation and how you would test success.

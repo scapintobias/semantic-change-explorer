@@ -1,0 +1,145 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Semantic Change Explorer snapshot v1",
+  "type": "object",
+  "properties": {
+    "schema_version": {
+      "const": "1.0"
+    },
+    "adapter": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string"
+        },
+        "version": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "name",
+        "version"
+      ]
+    },
+    "application": {
+      "type": "object"
+    },
+    "source": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string"
+        },
+        "sha256": {
+          "type": "string",
+          "pattern": "^[0-9a-f]{64}$"
+        }
+      },
+      "required": [
+        "name",
+        "sha256"
+      ]
+    },
+    "context": {
+      "type": "object"
+    },
+    "coverage": {
+      "type": "object",
+      "properties": {
+        "compared": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "not_compared": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        }
+      },
+      "required": [
+        "compared",
+        "not_compared"
+      ]
+    },
+    "entities": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "type": {
+            "type": "string"
+          },
+          "name": {
+            "type": "string"
+          },
+          "properties": {
+            "type": "object",
+            "additionalProperties": {
+              "type": "object",
+              "properties": {
+                "value": {},
+                "category": {
+                  "type": "string"
+                },
+                "label": {
+                  "type": "string"
+                },
+                "coverage": {
+                  "type": "string"
+                }
+              },
+              "required": [
+                "value",
+                "category",
+                "label",
+                "coverage"
+              ]
+            }
+          },
+          "relations": {
+            "type": "object",
+            "additionalProperties": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            }
+          },
+          "identity": {
+            "type": "object"
+          },
+          "spatial": {
+            "type": "object"
+          },
+          "visual": {
+            "type": "object"
+          },
+          "extensions": {
+            "type": "object"
+          }
+        },
+        "required": [
+          "id",
+          "type",
+          "name",
+          "properties",
+          "relations",
+          "identity"
+        ]
+      }
+    }
+  },
+  "required": [
+    "schema_version",
+    "adapter",
+    "source",
+    "coverage",
+    "entities"
+  ]
+}

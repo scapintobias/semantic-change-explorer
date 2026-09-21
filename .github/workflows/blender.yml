@@ -1,0 +1,42 @@
+name: Blender LTS integration
+on:
+  workflow_dispatch:
+  pull_request:
+    paths: ['src/**', 'tests/**', 'scripts/**', 'web/**', '.github/workflows/blender.yml']
+jobs:
+  integration:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Download pinned official LTS runtime and verify checksum
+        run: |
+          curl -fLO https://download.blender.org/release/Blender4.5/blender-4.5.14-linux-x64.tar.xz
+          echo '9ba871ff2ecd36526b77432745980b7e6664ecd0c7ca11c48849073dcfe06da3  blender-4.5.14-linux-x64.tar.xz' | sha256sum -c -
+          tar xf blender-4.5.14-linux-x64.tar.xz
+          echo "BLENDER=$PWD/blender-4.5.14-linux-x64/blender" >> "$GITHUB_ENV"
+      - run: python -m pip install -e . jsonschema
+      - run: npm ci --prefix web
+      - run: python scripts/package_viewer.py
+      - run: SCE_INTEGRATION=1 python -m unittest discover -s tests -v
+      - name: Generate canonical report
+        run: |
+          "$BLENDER" --background --factory-startup --disable-autoexec --python-exit-code 3 --python scripts/generate_fixture.py -- --output outputs/fixture
+          sce compare outputs/fixture/before.blend outputs/fixture/after.blend --output outputs/demo
+      - run: npx --prefix web playwright install --with-deps chromium
+      - name: Verify browser
+        run: |
+          sce serve outputs/demo > /tmp/sce-server.log 2>&1 &
+          npm run test:e2e --prefix web
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: canonical-report
+          path: |
+            outputs/demo
+            docs/demo.png

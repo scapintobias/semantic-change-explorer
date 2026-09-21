@@ -1,0 +1,10 @@
+include LICENSE README.md CHANGELOG.md ROADMAP.md CONTRIBUTING.md SECURITY.md
+recursive-include schemas *.json
+recursive-include fixtures *.json *.md
+recursive-include docs *.md *.png
+recursive-include scripts *.py
+recursive-include tests *.py
+recursive-include web/src *.ts *.tsx *.css
+recursive-include web/e2e *.ts
+include web/package.json web/package-lock.json web/tsconfig.json web/vite.config.ts web/playwright.config.ts web/index.html
+recursive-exclude private-notes *

@@ -1,0 +1,17 @@
+private-notes/
+.venv/
+__pycache__/
+*.pyc
+node_modules/
+web/dist/
+build/
+dist/
+*.egg-info/
+outputs/
+*.blend
+*.blend1
+.DS_Store
+playwright-report/
+test-results/
+src/semantic_change_explorer/viewer/*
+!src/semantic_change_explorer/viewer/.gitkeep

@@ -1,0 +1,234 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Semantic Change Explorer change v1",
+  "type": "object",
+  "properties": {
+    "schema_version": {
+      "const": "1.0"
+    },
+    "before": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string"
+        },
+        "sha256": {
+          "type": "string",
+          "pattern": "^[0-9a-f]{64}$"
+        }
+      },
+      "required": [
+        "name",
+        "sha256"
+      ]
+    },
+    "after": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string"
+        },
+        "sha256": {
+          "type": "string",
+          "pattern": "^[0-9a-f]{64}$"
+        }
+      },
+      "required": [
+        "name",
+        "sha256"
+      ]
+    },
+    "correspondences": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "before": {
+            "type": "string"
+          },
+          "after": {
+            "type": "string"
+          },
+          "evidence": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          }
+        },
+        "required": [
+          "before",
+          "after",
+          "evidence"
+        ]
+      }
+    },
+    "ambiguity": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "before": {
+            "type": "string"
+          },
+          "after": {
+            "type": "string"
+          },
+          "evidence": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          }
+        },
+        "required": [
+          "before",
+          "after",
+          "evidence"
+        ]
+      }
+    },
+    "records": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "name": {
+            "type": "string"
+          },
+          "type": {
+            "type": "string"
+          },
+          "status": {
+            "enum": [
+              "added",
+              "removed",
+              "modified",
+              "unchanged",
+              "ambiguous"
+            ]
+          },
+          "before": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "after": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "match": {
+            "type": "object",
+            "properties": {
+              "confidence": {
+                "type": "string"
+              },
+              "evidence": {
+                "type": "array",
+                "items": {
+                  "type": "string"
+                }
+              }
+            },
+            "required": [
+              "confidence",
+              "evidence"
+            ]
+          },
+          "changes": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "category": {
+                  "type": "string"
+                },
+                "label": {
+                  "type": "string"
+                },
+                "domain": {
+                  "enum": [
+                    "authored",
+                    "evaluated"
+                  ]
+                },
+                "before": {},
+                "after": {},
+                "compatible": {
+                  "type": "boolean"
+                },
+                "displacement": {
+                  "type": "object"
+                }
+              },
+              "required": [
+                "category",
+                "label",
+                "domain",
+                "before",
+                "after"
+              ]
+            }
+          }
+        },
+        "required": [
+          "id",
+          "name",
+          "type",
+          "status",
+          "before",
+          "after",
+          "match",
+          "changes"
+        ]
+      }
+    },
+    "coverage": {
+      "type": "object",
+      "properties": {
+        "compared": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "not_compared": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        }
+      },
+      "required": [
+        "compared",
+        "not_compared"
+      ]
+    },
+    "summary": {
+      "type": "object",
+      "additionalProperties": {
+        "type": "integer",
+        "minimum": 0
+      }
+    },
+    "context": {
+      "type": "object"
+    }
+  },
+  "required": [
+    "schema_version",
+    "before",
+    "after",
+    "correspondences",
+    "ambiguity",
+    "records",
+    "coverage",
+    "summary"
+  ]
+}
