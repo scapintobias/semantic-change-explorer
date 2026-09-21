@@ -4,7 +4,7 @@
 
 ![Actual generated enclosure comparison](docs/demo.png)
 
-A local v0.1.0 release candidate under a provisional working name. The demo above is generated from repository code, not a mockup.
+Version 1.0.0. The project is ready to be shared, installed locally, and used without any cloud dependency or external service.
 
 ## What it does
 
@@ -23,12 +23,13 @@ Requirements: Python 3.11+, Node 22.18+ (24/26 also suitable), npm, and Blender.
 ```sh
 python3 -m venv .venv
 . .venv/bin/activate
+python -m pip install -U pip setuptools wheel
 python -m pip install -e .
 npm ci --prefix web
 python scripts/package_viewer.py
 ```
 
-`package_viewer.py` builds and bundles the static viewer and third-party notices. Node is a build-time dependency; a properly built wheel includes the viewer. Blender remains separately installed. Set `BLENDER` or pass `--blender /path/to/blender` if discovery fails; the macOS `/Applications/Blender.app` location is detected automatically.
+This produces a ready-to-use local install of the CLI and viewer assets without adding any new functionality. `package_viewer.py` bundles the static viewer and third-party notices. Node is a build-time dependency; a properly built wheel includes the viewer. Blender remains separately installed. Set `BLENDER` or pass `--blender /path/to/blender` if discovery fails; the macOS `/Applications/Blender.app` location is detected automatically.
 
 ## First comparison
 
