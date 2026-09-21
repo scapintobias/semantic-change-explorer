@@ -30,12 +30,15 @@ class LocalCompareServer(ThreadingHTTPServer):
 
 
 class LocalCompareHandler(SimpleHTTPRequestHandler):
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
+    _root: Path
+    _static_root: Path
+
+    def setup(self):
         self._root = Path(self.server.directory).resolve()
         self._static_root = self._root / "web" / "dist"
         if not self._static_root.exists():
             self._static_root = self._root / "web"
+        super().setup()
 
     def log_message(self, format, *args):
         return

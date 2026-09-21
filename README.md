@@ -2,98 +2,168 @@
 
 # Semantic Change Explorer
 
-**See what changed in a structured 3D scene.** Compare two Blender files locally, inspect both states in 3D, and connect visual differences to semantic changes and correspondence evidence.
+Semantic Change Explorer is a local tool for understanding how a 3D scene changes between two Blender files.
+
+It is built for the simple case that matters most: you have a before and after state, you want to know what changed, and you want the answer in a fast, local, human-readable view instead of a raw file diff.
+
+The tool compares two `.blend` files on your own machine, extracts the scene structure, matches corresponding objects, and presents the result in a browser as a structured comparison with 3D views, change summaries, and evidence for likely correspondences.
 
 ![Actual generated enclosure comparison](docs/demo.png)
 
-Version 1.0.0. The project is ready to be shared, installed locally, and used without any cloud dependency or external service.
+## Why this exists
+
+Most file comparison tools are good at text, binary blobs, or rendered screenshots. They are not very good at helping you reason about a 3D scene as a scene.
+
+This project is aimed at exactly that gap:
+
+- compare a model before and after a design change
+- inspect which objects changed and how
+- understand whether something was added, removed, renamed, moved, or modified
+- review the inferred correspondence between the two states
+- do all of it locally, without sending files anywhere
+
+It is not a version-control system, merge tool, or a full Blender diff engine. It is a focused local analysis tool for understanding scene-level changes.
 
 ## What it does
 
-- Arbitrary `.blend` A/B comparison, without prior snapshots or persistent IDs.
-- Linked 3D/index selection, A-only/B-only/overlay/crossfade, fit and changed-entity navigation.
-- Explicit inferred correspondences, probable renames and unresolved duplicate candidates.
-- Authored transforms/relationships/mesh edits, sampled material/modifier fields, camera/light/custom properties, and separately evaluated geometry.
-- Portable local reports with snapshots, Change IR, GLBs, coverage and timings.
+- compares two local Blender files directly
+- matches objects between the previous and current scene
+- highlights added, removed, moved, and modified entities
+- surfaces likely rename and ambiguity cases
+- shows spatial geometry and semantic property deltas
+- keeps the workflow entirely local to your machine
 
-This is a comprehension tool. It is not a VCS, history store, merge system, complete Blender differ or rendered-image comparison. Existing tools already cover much semantic versioning territory; see the [competitive audit](docs/competitive-audit.md).
+This is especially useful when you are debugging design changes, checking fabrication or assembly updates, or simply trying to understand what changed between two scene states.
 
-## Install from a checkout
+## How the local workflow works
 
-Requirements: Python 3.11+, Node 22.18+ (24/26 also suitable), npm, and Blender. Locally tested: Blender **4.4.0 and 4.5.14 LTS**, Python **3.14.6**, Node **26.4.0**, Chrome on macOS ARM64. The CLI accepts Blender 4.2–4.5; untested accepted versions are not a compatibility guarantee. Both tested Blender versions pass the real integration suite; see the build log.
+The primary workflow is browser-first and local-only:
+
+1. You start the app with `sce-app --open`.
+2. You choose a Before and After `.blend` file in the browser.
+3. The browser sends those files only to the local loopback service on your own machine.
+4. The app stages the files in a temporary workspace.
+5. Blender extracts scene data and visual exports locally.
+6. The project compares the two states and builds a local report.
+7. The same app opens directly into the comparison viewer.
+
+No files leave your computer. Nothing is uploaded to a cloud service. After processing, the temporary job files are cleaned up.
+
+## Install
+
+Requirements:
+
+- Python 3.11+
+- Blender 4.2–4.5
+- a working Blender executable on PATH, or a valid `BLENDER` environment variable
+
+On a local checkout, the install is straightforward:
 
 ```sh
 python3 -m venv .venv
 . .venv/bin/activate
-python -m pip install -U pip setuptools wheel
+python -m pip install --upgrade pip setuptools wheel
 python -m pip install -e .
-npm ci --prefix web
-python scripts/package_viewer.py
 ```
 
-This produces a ready-to-use local install of the CLI and viewer assets without adding any new functionality. `package_viewer.py` bundles the static viewer and third-party notices. Node is a build-time dependency; a properly built wheel includes the viewer. Blender remains separately installed. Set `BLENDER` or pass `--blender /path/to/blender` if discovery fails; the macOS `/Applications/Blender.app` location is detected automatically.
-
-## Open the local application
+Then launch the app:
 
 ```sh
 sce-app --open
 ```
 
-This launches the browser-first local workflow on `http://127.0.0.1:8765`. The user selects or drags in a Before and After `.blend`, clicks Compare, and the browser sends both files only to the local loopback service. The local backend then stages them in a temporary workspace, invokes Blender safely, extracts both scenes, runs matching/diffing, generates the GLB and JSON output, and transitions the same application directly into the comparison interface.
+This opens the app at `http://127.0.0.1:8765`.
 
-Optional headless and developer commands still exist for snapshot generation or scripted processing, but they are not the product workflow:
+If Blender is not automatically detected, set it explicitly:
+
+```sh
+export BLENDER="/Applications/Blender.app/Contents/MacOS/Blender"
+sce-app --open
+```
+
+## Use it
+
+Once the app is running:
+
+- select the Before `.blend`
+- select the After `.blend`
+- click Compare
+- inspect the result in the browser
+
+The viewer includes:
+
+- a 3D comparison view
+- A/B/overlay/compare modes
+- a change index for found entities
+- semantic details for selected objects
+- a summary of likely correspondences and ambiguities
+
+## Developer and advanced usage
+
+The browser app is the product workflow. The CLI is still there for optional headless usage and debugging, but it is not the main user experience.
+
+Examples:
 
 ```sh
 sce compare before.blend after.blend --output ./report
 sce serve ./report --open
 ```
 
-No files leave your computer. Selected files are transferred only to the local loopback service, processed locally in a temporary workspace, and removed after processing.
+This is useful for reproducible local processing, fixtures, and automation.
 
-## Reproduce the demo
+## Privacy and local-only operation
 
-Use your Blender executable in the first command. On macOS replace `blender` with `/Applications/Blender.app/Contents/MacOS/Blender` if necessary.
+This project is designed to stay on your machine.
 
-```sh
-blender --background --factory-startup --disable-autoexec --python-exit-code 3 \
-  --python scripts/generate_fixture.py -- --output outputs/fixture
-sce compare outputs/fixture/before.blend outputs/fixture/after.blend --output outputs/demo
-sce serve outputs/demo --open
-```
+- no accounts
+- no telemetry
+- no remote uploads
+- no cloud processing
+- only the local loopback service is used during comparison
 
-Expected summary:
+Files are processed in a temporary local workspace and removed after the comparison completes. The security and trust model is intentionally simple: if it is not on your machine, it is not part of the workflow.
 
-```json
-{ "added": 1, "removed": 1, "modified": 7, "unchanged": 10, "ambiguous": 4 }
-```
+See [docs/security.md](docs/security.md) for the implementation boundaries and risk notes.
 
-Four ambiguous records represent two unresolved observations on each side, not four asserted edits. Select **Service panel** for movement, **Lower housing** for inferred rename/modifier/evaluated changes, and a **Spacer** for ambiguity. Use `[` / `]` to navigate changed entities, `F` to fit selection, or the equivalent buttons. The slider crossfades states; it does not reconstruct an edit animation. [Fixture details](fixtures/README.md) · [Capture procedure](docs/demo-capture.md).
+## Project structure
 
-## Privacy and limits
+The repository is organized around a small but clear flow:
 
-No files leave your computer. Selected files are transferred only to the local loopback service, processed locally in a temporary workspace, and removed after processing. No accounts, telemetry, AI or runtime cloud dependency. Embedded auto-execution is disabled before opening each source; source hashes are verified afterward and the extractor never saves inputs. **Blender is not sandboxed**: linked resources, native-code vulnerabilities and resource exhaustion remain relevant. [Security boundary](docs/security.md).
+- the browser app handles file selection and the user-facing workflow
+- the local server handles the loopback-only compare API
+- Blender extracts the scene state and visual output
+- the comparison engine matches and evaluates scene differences
+- the report view renders the result locally
 
-One active scene/view layer and saved frame; index-sensitive mesh comparison; no complete shader graphs, textures, animation, rigs, constraint settings or simulation reconstruction. Preview geometry uses simplified solid materials. Camera/light/collection entries are inspectable but have no visual proxies. Matching is heuristic and can be wrong. “Unchanged” means no difference in compared fields. The 400-object benchmark is not evidence for production-size scenes. [Full semantics](docs/diff-semantics.md) · [Matching limits](docs/entity-matching.md) · [Measured performance](docs/performance.md).
+For more detail, start with:
 
-## Develop and verify
+- [docs/architecture.md](docs/architecture.md)
+- [docs/code-tour.md](docs/code-tour.md)
+- [docs/data-model.md](docs/data-model.md)
+- [docs/entity-matching.md](docs/entity-matching.md)
+- [docs/testing.md](docs/testing.md)
 
-```sh
-python -m pip install jsonschema build
-python -m unittest discover -s tests -v
-SCE_INTEGRATION=1 python -m unittest discover -s tests -v
-npm test --prefix web
-npm run build --prefix web
-# With the canonical report served at localhost:8765:
-npm run test:e2e --prefix web
-# Package source and wheel after staging viewer:
-python -m build
-python scripts/audit_release.py
-```
+## Limitations
 
-Blender integration skips explicitly unless enabled. For browser tests outside macOS, set `CHROME_PATH` to an installed Chromium or use Playwright's CI browser setup. Developer/debug commands: `sce snapshot file.blend -o new.json`, `sce compare-snapshots a.json b.json -o changes.json`; `sce --debug ...` includes technical failure details.
+This is a practical comprehension tool, not a general-purpose Blender history system.
 
-Start reading: [architecture](docs/architecture.md), [guided code tour](docs/code-tour.md), [data model](docs/data-model.md), [matching](docs/entity-matching.md), [testing](docs/testing.md). Contributions: [guide](CONTRIBUTING.md). Decisions and truthful implementation history: [ADRs](docs/decisions/README.md), [build log](docs/build-log.md). Before publishing: [release checklist](docs/release-checklist.md).
+It is designed for useful scene-level understanding, but it has limits:
+
+- heuristic matching can be wrong in ambiguous cases
+- it compares a saved scene state, not an edit history
+- it does not reconstruct a perfect object timeline
+- it focuses on scene semantics, not full rendering or simulation fidelity
+
+That is intentional. The goal is clarity, not pretending to be a full-blown model-diffing platform.
+
+## Contributing
+
+Contributions are welcome. The codebase is structured around a small number of core components, and the best place to start is the architecture and code-tour docs.
+
+See [CONTRIBUTING.md](CONTRIBUTING.md) and the decision records in [docs/decisions/README.md](docs/decisions/README.md).
 
 ## License
 
-Project code: **GPL-3.0-or-later**. Bundled MIT dependency notices are preserved. Blender is not redistributed. [License text](LICENSE) · [licensing rationale](docs/licensing.md). No public release, hosted CI result or adoption is implied by this local candidate.
+The project is licensed under the GPL-3.0-or-later.
+
+Third-party notices for bundled viewer dependencies are preserved in the packaged output and the project includes the relevant licensing documentation. See [LICENSE](LICENSE) and [docs/licensing.md](docs/licensing.md).

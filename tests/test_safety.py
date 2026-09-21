@@ -127,6 +127,27 @@ class SafetyTests(unittest.TestCase):
                 server.server_close()
                 thread.join()
 
+    def test_local_loopback_server_serves_homepage(self):
+        from semantic_change_explorer.app import LocalCompareServer
+
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            web_root = root / "web"
+            web_root.mkdir()
+            (web_root / "index.html").write_text("<html><title>Semantic Change Explorer</title></html>")
+            server = LocalCompareServer(("127.0.0.1", 0), directory=str(root))
+            thread = threading.Thread(target=server.serve_forever, daemon=True)
+            thread.start()
+            url = f"http://127.0.0.1:{server.server_port}/"
+            try:
+                with urlopen(url) as response:
+                    self.assertEqual(response.status, 200)
+                    self.assertIn(b"Semantic Change Explorer", response.read())
+            finally:
+                server.shutdown()
+                server.server_close()
+                thread.join()
+
     def test_local_loopback_api_accepts_multipart(self):
         from semantic_change_explorer.app import LocalCompareServer
         from urllib.request import Request
