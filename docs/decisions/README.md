@@ -1,6 +1,8 @@
+<!-- @format -->
+
 # Decision record index
 
-Each decision was made for v0.1, not for a hypothetical universal scene platform.
+Each decision was made for the local browser-first v1.0 architecture, not for a hypothetical hosted service or static upload-only product.
 
 1. [Subprocess boundary](001-subprocess.md)
 2. [Snapshot / Change IR separation](002-ir.md)

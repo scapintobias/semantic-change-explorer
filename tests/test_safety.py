@@ -17,6 +17,9 @@ from semantic_change_explorer.adapters.blender import extract, locate
 from semantic_change_explorer.core.model import validate
 from semantic_change_explorer.report import LocalHandler
 
+# GUI-first loopback workflow regression: this route must accept multipart payloads
+# and begin the local comparison pipeline without the CLI output-directory flow.
+
 
 class SafetyTests(unittest.TestCase):
     def test_bad_property_shape_is_actionable(self):
@@ -119,6 +122,42 @@ class SafetyTests(unittest.TestCase):
                     urlopen(url + "/escape.txt")
                 self.assertEqual(failure.exception.code, 403)
                 failure.exception.close()
+            finally:
+                server.shutdown()
+                server.server_close()
+                thread.join()
+
+    def test_local_loopback_api_accepts_multipart(self):
+        from semantic_change_explorer.app import LocalCompareServer
+        from urllib.request import Request
+
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            before = root / "before.blend"
+            after = root / "after.blend"
+            before.write_bytes(b"before")
+            after.write_bytes(b"after")
+
+            server = LocalCompareServer(("127.0.0.1", 0), directory=str(root))
+            thread = threading.Thread(target=server.serve_forever, daemon=True)
+            thread.start()
+            url = f"http://127.0.0.1:{server.server_port}/api/compare"
+            payload = []
+            payload.append(b"--boundary\r\nContent-Disposition: form-data; name=before; filename=before.blend\r\nContent-Type: application/octet-stream\r\n\r\n")
+            payload.append(b"before\r\n--boundary\r\nContent-Disposition: form-data; name=after; filename=after.blend\r\nContent-Type: application/octet-stream\r\n\r\n")
+            payload.append(b"after\r\n--boundary--\r\n")
+            body = b"".join(payload)
+
+            req = Request(
+                url,
+                method="POST",
+                data=body,
+                headers={"Content-Type": "multipart/form-data; boundary=boundary"},
+            )
+            try:
+                with urlopen(req) as response:
+                    self.assertEqual(response.status, 200)
+                    self.assertIn(b"job_url", response.read())
             finally:
                 server.shutdown()
                 server.server_close()

@@ -1,3 +1,5 @@
+<!-- @format -->
+
 # Changelog
 
 ## 1.0.0 — release-ready, 2026-09-21

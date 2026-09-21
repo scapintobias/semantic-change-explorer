@@ -1,6 +1,8 @@
+<!-- @format -->
+
 # Security boundary
 
-The tool does not upload inputs, has no account, telemetry or remote application backend. Reports use bundled assets and a loopback static server. These facts do not make Blender a sandbox.
+No files leave your computer. Selected files are transferred only to the local loopback service, processed locally in a temporary workspace, and removed after processing. There is no account, telemetry or remote application backend. Reports use bundled assets and a loopback static server. These facts do not make Blender a sandbox.
 
 ## Input execution
 

@@ -1,3 +1,5 @@
+<!-- @format -->
+
 # Semantic Change Explorer
 
 **See what changed in a structured 3D scene.** Compare two Blender files locally, inspect both states in 3D, and connect visual differences to semantic changes and correspondence evidence.
@@ -31,14 +33,22 @@ python scripts/package_viewer.py
 
 This produces a ready-to-use local install of the CLI and viewer assets without adding any new functionality. `package_viewer.py` bundles the static viewer and third-party notices. Node is a build-time dependency; a properly built wheel includes the viewer. Blender remains separately installed. Set `BLENDER` or pass `--blender /path/to/blender` if discovery fails; the macOS `/Applications/Blender.app` location is detected automatically.
 
-## First comparison
+## Open the local application
+
+```sh
+sce-app --open
+```
+
+This launches the browser-first local workflow on `http://127.0.0.1:8765`. The user selects or drags in a Before and After `.blend`, clicks Compare, and the browser sends both files only to the local loopback service. The local backend then stages them in a temporary workspace, invokes Blender safely, extracts both scenes, runs matching/diffing, generates the GLB and JSON output, and transitions the same application directly into the comparison interface.
+
+Optional headless and developer commands still exist for snapshot generation or scripted processing, but they are not the product workflow:
 
 ```sh
 sce compare before.blend after.blend --output ./report
 sce serve ./report --open
 ```
 
-Outputs must be new paths; the CLI refuses to overwrite files/reports. The server binds loopback only. Reports need HTTP via `sce serve`, not opening `index.html` with `file://`.
+No files leave your computer. Selected files are transferred only to the local loopback service, processed locally in a temporary workspace, and removed after processing.
 
 ## Reproduce the demo
 
@@ -54,14 +64,14 @@ sce serve outputs/demo --open
 Expected summary:
 
 ```json
-{"added":1,"removed":1,"modified":7,"unchanged":10,"ambiguous":4}
+{ "added": 1, "removed": 1, "modified": 7, "unchanged": 10, "ambiguous": 4 }
 ```
 
 Four ambiguous records represent two unresolved observations on each side, not four asserted edits. Select **Service panel** for movement, **Lower housing** for inferred rename/modifier/evaluated changes, and a **Spacer** for ambiguity. Use `[` / `]` to navigate changed entities, `F` to fit selection, or the equivalent buttons. The slider crossfades states; it does not reconstruct an edit animation. [Fixture details](fixtures/README.md) · [Capture procedure](docs/demo-capture.md).
 
 ## Privacy and limits
 
-No uploads, accounts, telemetry, AI or runtime cloud dependency. Embedded auto-execution is disabled before opening each source; source hashes are verified afterward and the extractor never saves inputs. **Blender is not sandboxed**: linked resources, native-code vulnerabilities and resource exhaustion remain relevant. [Security boundary](docs/security.md).
+No files leave your computer. Selected files are transferred only to the local loopback service, processed locally in a temporary workspace, and removed after processing. No accounts, telemetry, AI or runtime cloud dependency. Embedded auto-execution is disabled before opening each source; source hashes are verified afterward and the extractor never saves inputs. **Blender is not sandboxed**: linked resources, native-code vulnerabilities and resource exhaustion remain relevant. [Security boundary](docs/security.md).
 
 One active scene/view layer and saved frame; index-sensitive mesh comparison; no complete shader graphs, textures, animation, rigs, constraint settings or simulation reconstruction. Preview geometry uses simplified solid materials. Camera/light/collection entries are inspectable but have no visual proxies. Matching is heuristic and can be wrong. “Unchanged” means no difference in compared fields. The 400-object benchmark is not evidence for production-size scenes. [Full semantics](docs/diff-semantics.md) · [Matching limits](docs/entity-matching.md) · [Measured performance](docs/performance.md).
 

@@ -9,6 +9,7 @@ requires-python = ">=3.11"
 license = "GPL-3.0-or-later"
 [project.scripts]
 sce = "semantic_change_explorer.cli:main"
+sce-app = "semantic_change_explorer.app:main"
 [tool.setuptools.packages.find]
 where = ["src"]
 [tool.setuptools.package-data]
