@@ -8,6 +8,7 @@ build/
 dist/
 *.egg-info/
 outputs/
+jobs/
 *.blend
 *.blend1
 .DS_Store
