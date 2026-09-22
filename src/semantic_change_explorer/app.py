@@ -1,9 +1,11 @@
 """Local GUI-first workflow: browser uploads, loopback-only processing, and report UI."""
 
 import json
+import os
 import shutil
 import threading
 import uuid
+from concurrent.futures import ThreadPoolExecutor, as_completed
 from email.parser import BytesParser
 from email.policy import default
 from io import BytesIO
@@ -22,8 +24,9 @@ class LocalCompareServer(ThreadingHTTPServer):
 
     allow_reuse_address = True
 
-    def __init__(self, server_address, directory=None):
+    def __init__(self, server_address, directory=None, static_root=None):
         self.directory = Path(directory or Path.cwd()).resolve()
+        self.static_root = Path(static_root).resolve() if static_root else None
         self.job_root = self.directory / "jobs"
         self.job_root.mkdir(parents=True, exist_ok=True)
         super().__init__(server_address, LocalCompareHandler)
@@ -35,7 +38,7 @@ class LocalCompareHandler(SimpleHTTPRequestHandler):
 
     def setup(self):
         self._root = Path(self.server.directory).resolve()
-        self._static_root = self._root / "web" / "dist"
+        self._static_root = self.server.static_root or self._root / "web" / "dist"
         if not self._static_root.exists():
             self._static_root = self._root / "web"
         super().setup()
@@ -65,6 +68,15 @@ class LocalCompareHandler(SimpleHTTPRequestHandler):
                 self.send_error(404)
                 return
             if target.is_dir():
+                status = target / "status.json"
+                if status.exists():
+                    try:
+                        payload = json.loads(status.read_text(encoding="utf-8"))
+                    except Exception:
+                        payload = None
+                    if payload and payload.get("state") == "processing":
+                        self._serve_processing_page(target, payload)
+                        return
                 index = target / "index.html"
                 if index.exists():
                     self._serve_static_file(index)
@@ -110,20 +122,62 @@ class LocalCompareHandler(SimpleHTTPRequestHandler):
 
     def _process_job(self, job_id, before_path, after_path):
         job_dir = self.server.job_root / job_id
+        job_dir.mkdir(parents=True, exist_ok=True)
         status_path = job_dir / "status.json"
+        steps = [
+            "loading before file",
+            "extracting before scene",
+            "loading after file",
+            "extracting after scene",
+            "matching and diffing",
+            "building report",
+        ]
         try:
-            write(status_path, {"ok": False, "state": "processing"})
-            a, ta = extract(before_path, job_dir / "before.snapshot.json", job_dir / "before.glb")
-            b, tb = extract(after_path, job_dir / "after.snapshot.json", job_dir / "after.glb")
+            write(status_path, {"ok": False, "state": "processing", "job_id": job_id, "progress": 5, "step": steps[0]})
+            threads_per_blender = max(1, (os.cpu_count() or 1) // 2)
+            write(status_path, {"ok": False, "state": "processing", "job_id": job_id, "progress": 15, "step": "extracting both scene states"})
+            jobs = {
+                "before": (before_path, job_dir / "a.snapshot.json", job_dir / "a.glb"),
+                "after": (after_path, job_dir / "b.snapshot.json", job_dir / "b.glb"),
+            }
+            extracted = {}
+            with ThreadPoolExecutor(max_workers=2, thread_name_prefix="sce-blender") as pool:
+                futures = {
+                    pool.submit(extract, source, snapshot, glb, None, threads_per_blender): side
+                    for side, (source, snapshot, glb) in jobs.items()
+                }
+                for completed, future in enumerate(as_completed(futures), start=1):
+                    extracted[futures[future]] = future.result()
+                    write(
+                        status_path,
+                        {
+                            "ok": False,
+                            "state": "processing",
+                            "job_id": job_id,
+                            "progress": 40 if completed == 1 else 65,
+                            "step": "one scene extracted; extracting the other"
+                            if completed == 1
+                            else "both scene states extracted",
+                        },
+                    )
+            a, ta = extracted["before"]
+            b, tb = extracted["after"]
+            write(status_path, {"ok": False, "state": "processing", "job_id": job_id, "progress": 70, "step": steps[4]})
             ir, timings = compare(a, b, effects)
+            write(status_path, {"ok": False, "state": "processing", "job_id": job_id, "progress": 80, "step": steps[5]})
             write(job_dir / "changes.json", ir)
             build_report(job_dir, a, b, ir, {"before": ta, "after": tb, **timings})
-            write(status_path, {"ok": True, "state": "complete", "job_id": job_id})
+            write(status_path, {"ok": True, "state": "complete", "job_id": job_id, "progress": 100, "step": "complete"})
         except Exception as exc:
-            write(status_path, {"ok": False, "state": "error", "error": str(exc), "job_id": job_id})
+            try:
+                write(status_path, {"ok": False, "state": "error", "error": str(exc), "job_id": job_id, "progress": 0, "step": "error"})
+            except FileNotFoundError:
+                pass
         finally:
-            before_path.unlink(missing_ok=True)
-            after_path.unlink(missing_ok=True)
+            if before_path.exists():
+                before_path.unlink(missing_ok=True)
+            if after_path.exists():
+                after_path.unlink(missing_ok=True)
 
     def do_POST(self):
         parsed = urlparse(self.path)
@@ -193,6 +247,45 @@ class LocalCompareHandler(SimpleHTTPRequestHandler):
         relative = "/".join(parts[1:])
         return base / relative
 
+    def _serve_processing_page(self, job_dir, payload=None):
+        progress = int((payload or {}).get("progress", 0))
+        step = (payload or {}).get("step", "processing")
+        self.send_response(200)
+        self.send_header("Content-Type", "text/html; charset=utf-8")
+        self.end_headers()
+        html = f"""
+<!doctype html>
+<html lang=\"en\">
+  <head>
+    <meta charset=\"utf-8\" />
+    <meta name=\"viewport\" content=\"width=device-width, initial-scale=1\" />
+    <title>Semantic Change Explorer</title>
+    <meta http-equiv=\"refresh\" content=\"2\" />
+    <style>
+      html, body {{ margin: 0; padding: 0; background: #07141d; color: #edf5fb; font-family: system-ui, sans-serif; }}
+      body {{ min-height: 100vh; display: grid; place-items: center; }}
+      .card {{ width: min(960px, 92vw); }}
+      h1 {{ font-size: clamp(2.5rem, 6vw, 5rem); font-weight: 300; margin: 0 0 1rem; }}
+      p {{ font-size: clamp(1.1rem, 2vw, 1.8rem); margin: 0; color: #dfeaf5; }}
+      .muted {{ color: #9bb5c8; margin-top: 1.5rem; }}
+      .bar {{ height: 18px; border-radius: 999px; overflow: hidden; background: rgba(255,255,255,0.08); border: 1px solid rgba(255,255,255,0.08); margin-top: 1.25rem; }}
+      .fill {{ height: 100%; width: {progress}%; background: linear-gradient(90deg, #67e8f9, #a78bfa, #f9a8d4); transition: width 0.3s ease; }}
+      .meta {{ margin-top: 0.75rem; color: #9bb5c8; font-size: 0.95rem; }}
+    </style>
+  </head>
+  <body>
+    <div class=\"card\">
+      <h1>Processing your comparison…</h1>
+      <p>Working locally on the before/after scene analysis.</p>
+      <div class=\"bar\"><div class=\"fill\"></div></div>
+      <p class=\"meta\">Progress: {progress}% · {step}</p>
+      <p class=\"muted\">This page refreshes automatically until the result is ready.</p>
+    </div>
+  </body>
+</html>
+"""
+        self.wfile.write(html.encode("utf-8"))
+
     def _serve_static_file(self, path):
         resolved = Path(path).resolve()
         if not resolved.exists() or not resolved.is_file():
@@ -224,7 +317,12 @@ def main():
     parser.add_argument("--open", action="store_true")
     args = parser.parse_args()
 
-    server = LocalCompareServer((args.host, args.port), directory=str(Path(__file__).resolve().parents[2]))
+    runtime_root = Path.cwd().resolve()
+    server = LocalCompareServer(
+        (args.host, args.port),
+        directory=str(runtime_root),
+        static_root=str(viewer_assets()),
+    )
     print(f"http://{args.host}:{args.port}")
     if args.open:
         import webbrowser

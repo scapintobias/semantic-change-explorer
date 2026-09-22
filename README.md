@@ -51,33 +51,78 @@ No files leave your computer. Nothing is uploaded to a cloud service. After proc
 
 ## Install
 
-Requirements:
+You need Blender and the app. The app runs locally and includes its browser interface, so there is no Node, npm, database, account, or cloud service to set up.
 
-- Python 3.11+
-- Blender 4.2–4.5
-- a working Blender executable on PATH, or a valid `BLENDER` environment variable
-
-On a local checkout, the install is straightforward:
+On macOS with Homebrew:
 
 ```sh
-python3 -m venv .venv
-. .venv/bin/activate
-python -m pip install --upgrade pip setuptools wheel
-python -m pip install -e .
+brew install --cask blender
+brew install pipx
+pipx ensurepath
+pipx install semantic-change-explorer
 ```
 
-Then launch the app:
+Open a new terminal, then start it:
 
 ```sh
 sce-app --open
 ```
 
-This opens the app at `http://127.0.0.1:8765`.
+That opens the app at `http://127.0.0.1:8765`. Select the two `.blend` files in the browser and click **Compare**.
 
-If Blender is not automatically detected, set it explicitly:
+### Linux
+
+Install Blender from blender.org or your distribution package manager, then install the app with `pipx`:
+
+```sh
+python3 -m pip install --user pipx
+python3 -m pipx ensurepath
+pipx install semantic-change-explorer
+sce-app --open
+```
+
+If Blender is not on `PATH`, set its path before launching:
+
+```sh
+export BLENDER="$HOME/Blender/blender"
+sce-app --open
+```
+
+### Windows
+
+Install Blender from blender.org, then open PowerShell:
+
+```powershell
+py -m pip install --user pipx
+py -m pipx ensurepath
+pipx install semantic-change-explorer
+sce-app --open
+```
+
+If Blender is not on `PATH`, set its path for the current PowerShell session:
+
+```powershell
+$env:BLENDER = "C:\Program Files\Blender Foundation\Blender 4.5\blender.exe"
+sce-app --open
+```
+
+The app accepts Blender from `PATH` or the `BLENDER` environment variable on every platform. macOS also checks its standard `/Applications/Blender.app` location automatically.
+
+If Blender is installed somewhere non-standard on macOS, set its path once before launching:
 
 ```sh
 export BLENDER="/Applications/Blender.app/Contents/MacOS/Blender"
+sce-app --open
+```
+
+### Installing from a checkout
+
+For contributors working from this repository, use an isolated environment instead:
+
+```sh
+python3 -m venv .venv
+. .venv/bin/activate
+python -m pip install -e .
 sce-app --open
 ```
 

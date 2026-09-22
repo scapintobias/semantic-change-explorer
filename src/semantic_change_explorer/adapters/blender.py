@@ -38,7 +38,7 @@ def locate(explicit=None):
     return str(candidate)
 
 
-def extract(source, output, visual=None, blender=None):
+def extract(source, output, visual=None, blender=None, threads=None):
     """Open input in an isolated process, hash before/after, return snapshot/timings."""
     source, output = Path(source).resolve(), Path(output).resolve()
     if not source.is_file() or source.suffix.lower() != ".blend":
@@ -59,6 +59,8 @@ def extract(source, output, visual=None, blender=None):
         "--",
         str(output),
     ]
+    if threads is not None:
+        args[4:4] = ["--threads", str(threads)]
     if visual:
         args.append(str(Path(visual).resolve()))
     start = time.perf_counter()

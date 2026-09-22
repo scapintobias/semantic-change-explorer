@@ -148,6 +148,62 @@ class SafetyTests(unittest.TestCase):
                 server.server_close()
                 thread.join()
 
+    def test_local_loopback_job_route_waits_for_report(self):
+        from semantic_change_explorer.app import LocalCompareServer
+
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            job_id = "job-123"
+            job_dir = root / "jobs" / job_id
+            job_dir.mkdir(parents=True)
+            (job_dir / "status.json").write_text(
+                json.dumps({"ok": False, "state": "processing", "job_id": job_id, "progress": 42}),
+                encoding="utf-8",
+            )
+
+            server = LocalCompareServer(("127.0.0.1", 0), directory=str(root))
+            thread = threading.Thread(target=server.serve_forever, daemon=True)
+            thread.start()
+            url = f"http://127.0.0.1:{server.server_port}/jobs/{job_id}/"
+            try:
+                with urlopen(url) as response:
+                    self.assertEqual(response.status, 200)
+                    body = response.read()
+                    self.assertIn(b"Processing", body)
+                    self.assertIn(b"progress", body.lower())
+            finally:
+                server.shutdown()
+                server.server_close()
+                thread.join()
+
+    def test_local_loopback_job_status_exposes_progress(self):
+        from semantic_change_explorer.app import LocalCompareServer
+
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            job_id = "job-progress"
+            job_dir = root / "jobs" / job_id
+            job_dir.mkdir(parents=True)
+            (job_dir / "status.json").write_text(
+                json.dumps({"ok": False, "state": "processing", "job_id": job_id, "progress": 72}),
+                encoding="utf-8",
+            )
+
+            server = LocalCompareServer(("127.0.0.1", 0), directory=str(root))
+            thread = threading.Thread(target=server.serve_forever, daemon=True)
+            thread.start()
+            url = f"http://127.0.0.1:{server.server_port}/jobs/{job_id}/status.json"
+            try:
+                with urlopen(url) as response:
+                    self.assertEqual(response.status, 200)
+                    payload = json.loads(response.read().decode("utf-8"))
+                    self.assertEqual(payload["state"], "processing")
+                    self.assertEqual(payload["progress"], 72)
+            finally:
+                server.shutdown()
+                server.server_close()
+                thread.join()
+
     def test_local_loopback_api_accepts_multipart(self):
         from semantic_change_explorer.app import LocalCompareServer
         from urllib.request import Request

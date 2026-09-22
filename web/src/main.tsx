@@ -13,7 +13,45 @@ import {
 import type { Mode, Report } from './types';
 import './style.css';
 
-function ComparisonApp({ report }: { report: Report }) {
+// The active comparison screen is defined below and is used for the final
+// report view after a successful local comparison.
+
+function ProcessingOverlay({
+	progress,
+	step,
+}: {
+	progress: number;
+	step: string;
+}) {
+	return (
+		<div className='overlay'>
+			<div className='overlay-card'>
+				<p className='eyebrow'>LOCAL PROCESSING</p>
+				<h2>Comparing scene states…</h2>
+				<p className='overlay-step'>{step}</p>
+				<div
+					className='progress-bar'
+					aria-live='polite'>
+					<div
+						className='progress-fill'
+						style={{ width: `${progress}%` }}
+					/>
+				</div>
+				<div className='progress-meta'>Progress: {progress}%</div>
+			</div>
+		</div>
+	);
+}
+
+function ComparisonApp({
+	report,
+	assetBase,
+	onLoadNew,
+}: {
+	report: Report;
+	assetBase: string;
+	onLoadNew: () => void;
+}) {
 	const records = report.diff.records;
 	const [selected, setSelected] = useState(
 		records.find((r) => r.changes.some((c) => c.category === 'moved'))
@@ -53,7 +91,7 @@ function ComparisonApp({ report }: { report: Report }) {
 		};
 		window.addEventListener('keydown', key);
 		return () => window.removeEventListener('keydown', key);
-	});
+	}, [selected, navigation]);
 
 	const selectedEntity =
 		report.after.entities.find((e) => e.id === record?.after) ||
@@ -81,8 +119,8 @@ function ComparisonApp({ report }: { report: Report }) {
 				</div>
 				<button
 					className='secondary'
-					onClick={() => (window.location.href = '/')}>
-					Compare another pair
+					onClick={onLoadNew}>
+					Load new files
 				</button>
 			</header>
 			<div className='summary'>
@@ -209,6 +247,7 @@ function ComparisonApp({ report }: { report: Report }) {
 					</div>
 					<Viewer
 						report={report}
+						assetBase={assetBase}
 						selected={selected}
 						onSelect={setSelected}
 						mode={mode}
@@ -424,40 +463,31 @@ function ComparisonApp({ report }: { report: Report }) {
 	);
 }
 
-function UploadScreen() {
+function ReadyWorkspace({
+	processing,
+	progress,
+	step,
+	onCompare,
+}: {
+	processing: boolean;
+	progress: number;
+	step: string;
+	onCompare: (before: File, after: File) => Promise<void>;
+}) {
 	const [before, setBefore] = useState<File | null>(null);
 	const [after, setAfter] = useState<File | null>(null);
-	const [status, setStatus] = useState('Ready to compare.');
 	const [error, setError] = useState('');
 	const [busy, setBusy] = useState(false);
 
-	const handleCompare = async () => {
+	const submit = async () => {
 		if (!before || !after) {
 			setError('Select both a Before and After .blend file.');
 			return;
 		}
-
 		setBusy(true);
 		setError('');
-		setStatus('Sending files to the local loopback service…');
-
-		const form = new FormData();
-		form.append('before', before, before.name);
-		form.append('after', after, after.name);
-
 		try {
-			const response = await fetch('/api/compare', {
-				method: 'POST',
-				body: form,
-			});
-			const payload = await response.json();
-			if (!response.ok || !payload.ok) {
-				throw new Error(
-					payload.error || 'The local comparison failed.',
-				);
-			}
-			setStatus('Processing in the local temporary workspace…');
-			window.location.assign(payload.job_url);
+			await onCompare(before, after);
 		} catch (exc) {
 			setError(
 				exc instanceof Error
@@ -465,85 +495,153 @@ function UploadScreen() {
 					: 'Unknown comparison error.',
 			);
 			setBusy(false);
-			setStatus('Ready to compare.');
 		}
 	};
 
 	return (
-		<div className='upload-shell'>
-			<div className='upload-card'>
-				<div className='brand-block'>
+		<div className='app app-ready'>
+			<header>
+				<div className='brand'>
 					<span className='brandmark'>◈</span>
 					<div>
 						SEMANTIC CHANGE EXPLORER
-						<small>LOCAL BROWSER WORKFLOW · v1.0.0</small>
+						<small>LOCAL COMPARISON · v1.0.0</small>
 					</div>
 				</div>
-
-				<div className='upload-grid'>
-					<label className='dropzone'>
-						<span>Before</span>
-						<input
-							type='file'
-							accept='.blend'
-							onChange={(e) =>
-								setBefore(e.target.files?.[0] ?? null)
-							}
-						/>
-						<strong>
-							{before ? before.name : 'Choose Before .blend'}
-						</strong>
-					</label>
-
-					<button
-						className='swap'
-						type='button'
-						onClick={() => {
-							const nextBefore = after;
-							setAfter(before);
-							setBefore(nextBefore);
-						}}>
-						Swap
-					</button>
-
-					<label className='dropzone'>
-						<span>After</span>
-						<input
-							type='file'
-							accept='.blend'
-							onChange={(e) =>
-								setAfter(e.target.files?.[0] ?? null)
-							}
-						/>
-						<strong>
-							{after ? after.name : 'Choose After .blend'}
-						</strong>
-					</label>
+				<div className='sources'>
+					<span>A</span> BEFORE <b>→</b> <span>B</span> AFTER
 				</div>
-
-				<button
-					className='primary'
-					disabled={busy || !before || !after}
-					onClick={handleCompare}>
-					{busy ? 'Comparing…' : 'Compare'}
-				</button>
-
-				<p className='status'>{status}</p>
-				{error && <p className='error-text'>{error}</p>}
-
-				<p className='local-note'>
-					No files leave your computer. Selected files are transferred
-					only to the local loopback service, processed locally in a
-					temporary workspace, and removed after processing.
-				</p>
+			</header>
+			<div className='summary'>
+				<strong>Understand the difference.</strong>
+				<div>
+					<span className='added'>• added</span>
+					<span className='removed'>• removed</span>
+					<span className='modified'>• modified</span>
+				</div>
 			</div>
+			<main>
+				<aside className='index'>
+					<div className='section-title'>
+						CHANGE INDEX <span>waiting</span>
+					</div>
+					<div className='placeholder'>
+						Choose the Before and After files to populate the
+						comparison index.
+					</div>
+				</aside>
+				<section className='spatial'>
+					<div className='toolbar'>
+						<div className='modes'>
+							<button aria-pressed='true'>Overlay</button>
+							<button>A only</button>
+							<button>B only</button>
+						</div>
+						<div>
+							<button>Fit selected · F</button>
+							<button>Fit scene</button>
+						</div>
+					</div>
+					<div className='empty-viewport'>
+						<div className='empty-viewport-copy'>
+							<p>Waiting for two scenes</p>
+							<small>
+								Load a Before and After .blend to begin.
+							</small>
+						</div>
+					</div>
+				</section>
+				<aside className='inspector'>
+					<div className='section-title'>SEMANTIC INSPECTOR</div>
+					<div className='placeholder'>
+						The scene diff will open here once the comparison has
+						finished.
+					</div>
+				</aside>
+			</main>
+			<footer>
+				<span>Local-only workflow</span>
+				<span>Loopback service only</span>
+				<span>Temporary workspace</span>
+			</footer>
+			{processing ? (
+				<ProcessingOverlay
+					progress={progress}
+					step={step}
+				/>
+			) : (
+				<div className='overlay'>
+					<div className='overlay-card'>
+						<p className='eyebrow'>ADD BEFORE / AFTER</p>
+						<h2>Select the two .blend files</h2>
+						<div className='upload-grid'>
+							<label className='dropzone'>
+								<span>Before</span>
+								<input
+									type='file'
+									accept='.blend'
+									onChange={(e) =>
+										setBefore(e.target.files?.[0] ?? null)
+									}
+								/>
+								<strong>
+									{before
+										? before.name
+										: 'Choose Before .blend'}
+								</strong>
+							</label>
+							<label className='dropzone'>
+								<span>After</span>
+								<input
+									type='file'
+									accept='.blend'
+									onChange={(e) =>
+										setAfter(e.target.files?.[0] ?? null)
+									}
+								/>
+								<strong>
+									{after ? after.name : 'Choose After .blend'}
+								</strong>
+							</label>
+						</div>
+						<div className='overlay-actions'>
+							<button
+								className='swap'
+								type='button'
+								onClick={() => {
+									const nextBefore = after;
+									setAfter(before);
+									setBefore(nextBefore);
+								}}>
+								Swap
+							</button>
+							<button
+								className='primary'
+								type='button'
+								disabled={busy || !before || !after}
+								onClick={() => {
+									void submit();
+								}}>
+								{busy ? 'Comparing…' : 'Compare'}
+							</button>
+						</div>
+						{error && <p className='error-text'>{error}</p>}
+					</div>
+				</div>
+			)}
 		</div>
 	);
 }
 
 function App() {
 	const [report, setReport] = useState<Report | null>(null);
+	const [assetBase, setAssetBase] = useState(
+		new URL('./', window.location.href).toString(),
+	);
 	const [loading, setLoading] = useState(true);
+	const [processing, setProcessing] = useState(false);
+	const [progress, setProgress] = useState(0);
+	const [step, setStep] = useState('Preparing local comparison');
 
 	useEffect(() => {
 		fetch('./report.json', { cache: 'no-store' })
@@ -554,16 +652,123 @@ function App() {
 			.then((payload) => {
 				if (payload && payload.diff?.summary) {
 					setReport(payload);
+					setAssetBase(
+						new URL('./', window.location.href).toString(),
+					);
 				}
 			})
 			.finally(() => setLoading(false));
 	}, []);
 
+	const loadNew = () => {
+		setReport(null);
+		setAssetBase(new URL('./', window.location.href).toString());
+		setProcessing(false);
+		setProgress(0);
+		setStep('Preparing local comparison');
+	};
+
+	const handleCompare = async (before: File, after: File) => {
+		const form = new FormData();
+		form.append('before', before, before.name);
+		form.append('after', after, after.name);
+
+		const response = await fetch('/api/compare', {
+			method: 'POST',
+			body: form,
+		});
+		const payload = await response.json();
+		if (!response.ok || !payload.ok) {
+			throw new Error(payload.error || 'The local comparison failed.');
+		}
+
+		setProcessing(true);
+		setProgress(0);
+		setStep('Sending files to the local loopback service');
+
+		const jobBase = payload.job_url.endsWith('/')
+			? payload.job_url
+			: `${payload.job_url}/`;
+		const statusUrl = new URL('status.json', jobBase);
+
+		const poll = async (): Promise<void> => {
+			const statusResponse = await fetch(statusUrl, {
+				cache: 'no-store',
+			});
+			if (!statusResponse.ok) {
+				setProcessing(false);
+				throw new Error('The comparison status could not be read.');
+			}
+
+			const status = await statusResponse.json();
+			const nextProgress = Number(status.progress ?? 0);
+			setProgress(
+				Number.isFinite(nextProgress)
+					? Math.min(100, Math.max(0, nextProgress))
+					: 0,
+			);
+			setStep(status.step || 'Processing local scene');
+
+			if (status.state === 'complete') {
+				const reportResponse = await fetch(
+					new URL('report.json', jobBase),
+					{
+						cache: 'no-store',
+					},
+				);
+				if (!reportResponse.ok) {
+					setProcessing(false);
+					throw new Error(
+						'The comparison completed but the report was not ready.',
+					);
+				}
+				const nextReport = await reportResponse.json();
+				if (nextReport && nextReport.diff?.summary) {
+					setReport(nextReport);
+					setAssetBase(jobBase);
+					setProcessing(false);
+					return;
+				}
+				setProcessing(false);
+				throw new Error(
+					'The comparison completed but the report was malformed.',
+				);
+			}
+
+			if (status.state === 'error') {
+				setProcessing(false);
+				throw new Error(status.error || 'The comparison failed.');
+			}
+
+			await new Promise((resolve) => setTimeout(resolve, 800));
+			return poll();
+		};
+
+		await poll();
+	};
+
 	if (loading) {
 		return <div className='loading'>Loading local application…</div>;
 	}
 
-	return report ? <ComparisonApp report={report} /> : <UploadScreen />;
+	if (report) {
+		return (
+			<ComparisonApp
+				report={report}
+				assetBase={assetBase}
+				onLoadNew={loadNew}
+			/>
+		);
+	}
+
+	return (
+		<ReadyWorkspace
+			processing={processing}
+			progress={progress}
+			step={step}
+			onCompare={handleCompare}
+		/>
+	);
 }
 
 const root = createRoot(document.getElementById('root')!);
